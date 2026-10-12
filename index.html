@@ -83,7 +83,7 @@
                 </div>
                 <div>
                     <span class="text-xl font-black tracking-tight text-ghText">Inf<span class="text-limeAccent">Score</span></span>
-                    <span class="hidden sm:inline-block ml-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-limeLight text-limeAccent border border-lime-300">Auditor & Valuation v3.0</span>
+                    <span class="hidden sm:inline-block ml-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-limeLight text-limeAccent border border-lime-300">Auditor & Valuation v3.2</span>
                 </div>
             </div>
             <div class="flex items-center space-x-3">
@@ -117,7 +117,6 @@
 
         <div class="space-y-6">
 
-            <!-- Creator Information Input -->
             <div class="bg-white rounded-xl border border-ghBorder p-5 sm:p-6 shadow-sm">
                 <div class="flex items-center justify-between mb-4 pb-3 border-b border-ghBorder">
                     <div class="flex items-center space-x-2.5">
@@ -139,32 +138,31 @@
                                 class="w-full pl-9 pr-3.5 py-2 text-sm rounded-md border border-ghBorder bg-white text-ghText focus:outline-none focus:ring-2 focus:ring-limeAccent focus:border-transparent transition">
                         </div>
                     </div>
-                    <div>
-                        <label for="creator-country" class="block text-xs font-semibold text-ghText mb-1">Country of Origin *</label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-ghMuted">
-                                <i class="fa-solid fa-globe text-xs"></i>
-                            </span>
-                            <select id="creator-country" onchange="recalculate()"
-                                class="w-full pl-9 pr-8 py-2 text-sm rounded-md border border-ghBorder bg-white text-ghText focus:outline-none focus:ring-2 focus:ring-limeAccent focus:border-transparent transition appearance-none">
-                                <option value="" disabled selected>Select country...</option>
-                                <option value="South Africa">South Africa</option>
-                                <option value="United States">United States</option>
-                                <option value="United Kingdom">United Kingdom</option>
-                                <option value="Canada">Canada</option>
-                                <option value="Australia">Australia</option>
-                                <option value="Germany">Germany</option>
-                                <option value="France">France</option>
-                                <option value="Brazil">Brazil</option>
-                                <option value="India">India</option>
-                                <option value="Japan">Japan</option>
-                                <option value="Singapore">Singapore</option>
-                                <option value="United Arab Emirates">United Arab Emirates</option>
-                                <option value="Other">Other Location</option>
-                            </select>
-                            <span class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-ghMuted text-xs">
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </span>
+                    
+                    <!-- Searchable Country Dropdown Widget -->
+                    <div class="relative" id="country-widget">
+                        <label class="block text-xs font-semibold text-ghText mb-1">Country of Origin (195 Sovereign States) *</label>
+                        <div onclick="toggleCountryDropdown()" id="country-selector-btn"
+                            class="w-full pl-9 pr-8 py-2 text-sm rounded-md border border-ghBorder bg-white text-ghText cursor-pointer focus:outline-none focus:ring-2 focus:ring-limeAccent transition flex items-center justify-between select-none">
+                            <span id="country-selected-text" class="text-ghMuted truncate">Select country...</span>
+                            <span class="text-ghMuted text-xs ml-2"><i class="fa-solid fa-chevron-down"></i></span>
+                        </div>
+                        <span class="absolute top-[28px] left-3 pointer-events-none text-ghMuted text-xs">
+                            <i class="fa-solid fa-globe"></i>
+                        </span>
+
+                        <!-- Custom Searchable Country Menu -->
+                        <div id="country-dropdown-menu" class="hidden absolute left-0 right-0 top-full mt-1 z-50 bg-white border border-ghBorder rounded-lg shadow-xl overflow-hidden flex flex-col max-h-64">
+                            <div class="p-2 border-b border-ghBorder bg-ghBg sticky top-0">
+                                <div class="relative">
+                                    <input type="text" id="country-search-input" placeholder="Search 195 countries..." oninput="filterCountries()"
+                                        class="w-full pl-8 pr-3 py-1.5 text-xs rounded-md border border-ghBorder bg-white text-ghText focus:outline-none focus:ring-2 focus:ring-limeAccent">
+                                    <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2 text-ghMuted text-xs"></i>
+                                </div>
+                            </div>
+                            <div id="country-list-container" class="overflow-y-auto flex-1 divide-y divide-gray-100">
+                                <!-- Dynamically populated by JS -->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -221,6 +219,7 @@
                 </div>
             </div>
 
+            <!-- Benchmark Explanation Banner -->
             <div class="bg-gradient-to-r from-white via-limeLight/40 to-white rounded-xl border border-lime-300 p-5 shadow-sm">
                 <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div class="flex items-start space-x-3.5">
@@ -422,6 +421,33 @@
         // Exchange conversion constant (1 ZAR = ~$0.0608 USD)
         const ZAR_TO_USD_RATE = 0.0608;
 
+        // Definition of all 195 UN-Recognized Sovereign Countries
+        const allCountries = [
+            "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria",
+            "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan",
+            "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia",
+            "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo (Congo-Brazzaville)", "Costa Rica",
+            "Croatia", "Cuba", "Cyprus", "Czechia (Czech Republic)", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador",
+            "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France",
+            "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau",
+            "Guyana", "Haiti", "Holy See (Vatican City)", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq",
+            "Ireland", "Israel", "Italy", "Ivory Coast", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati",
+            "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania",
+            "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius",
+            "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar (Burma)", "Namibia",
+            "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia", "Norway",
+            "Oman", "Pakistan", "Palau", "Palestine State", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland",
+            "Portugal", "Qatar", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino",
+            "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands",
+            "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland",
+            "Syria", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey",
+            "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu",
+            "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+        ];
+
+        // State for selected country
+        let selectedCountryValue = "";
+
         // Definition of the 10 Top Social Platforms
         const socialPlatforms = [
             { id: 'youtube', name: 'YouTube', icon: 'fa-brands fa-youtube', color: '#dc2626', bg: '#fef2f2', placeholder: '@channel' },
@@ -435,6 +461,69 @@
             { id: 'reddit', name: 'Reddit', icon: 'fa-brands fa-reddit-alien', color: '#ea580c', bg: '#fff7ed', placeholder: 'u/username' },
             { id: 'threads', name: 'Threads', icon: 'fa-brands fa-threads', color: '#000000', bg: '#f3f4f6', placeholder: '@username' }
         ];
+
+        // Custom Country Dropdown Logic
+        function renderCountryList(filterText = '') {
+            const container = document.getElementById('country-list-container');
+            const cleanFilter = filterText.toLowerCase().trim();
+            const filtered = allCountries.filter(c => c.toLowerCase().includes(cleanFilter));
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="px-3 py-3 text-xs text-ghMuted text-center">No matching country found</div>`;
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(c => {
+                const isSelected = selectedCountryValue === c;
+                html += `
+                    <div onclick="selectCountry('${c.replace(/'/g, "\\'")}')" 
+                        class="px-3 py-2 text-xs font-medium text-ghText hover:bg-limeLight hover:text-limeAccent cursor-pointer flex items-center justify-between transition ${isSelected ? 'bg-limeLight/60 text-limeAccent font-bold' : ''}">
+                        <span>${c}</span>
+                        ${isSelected ? '<i class="fa-solid fa-check text-limeAccent text-xs"></i>' : ''}
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function toggleCountryDropdown() {
+            const menu = document.getElementById('country-dropdown-menu');
+            const isHidden = menu.classList.contains('hidden');
+            
+            if (isHidden) {
+                menu.classList.remove('hidden');
+                document.getElementById('country-search-input').focus();
+            } else {
+                menu.classList.add('hidden');
+            }
+        }
+
+        function filterCountries() {
+            const query = document.getElementById('country-search-input').value;
+            renderCountryList(query);
+        }
+
+        function selectCountry(country) {
+            selectedCountryValue = country;
+            const textSpan = document.getElementById('country-selected-text');
+            textSpan.innerText = country;
+            textSpan.classList.remove('text-ghMuted');
+            textSpan.classList.add('text-ghText', 'font-semibold');
+            
+            document.getElementById('country-dropdown-menu').classList.add('hidden');
+            recalculate();
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            const widget = document.getElementById('country-widget');
+            if (widget && !widget.contains(e.target)) {
+                const menu = document.getElementById('country-dropdown-menu');
+                if (menu) menu.classList.add('hidden');
+            }
+        });
 
         // Render Platform Input Grid
         function renderPlatformGrid() {
@@ -475,7 +564,7 @@
 
         function getData() {
             const userName = document.getElementById('creator-name').value.trim() || 'Unspecified Creator';
-            const userCountry = document.getElementById('creator-country').value || 'Unspecified Location';
+            const userCountry = selectedCountryValue || 'Unspecified Location';
             
             let totalFollowers = 0;
             let activeCount = 0;
@@ -700,11 +789,17 @@
 
         function resetAllFields() {
             document.getElementById('creator-name').value = '';
-            document.getElementById('creator-country').value = '';
+            selectedCountryValue = '';
+            const textSpan = document.getElementById('country-selected-text');
+            textSpan.innerText = 'Select country...';
+            textSpan.classList.remove('text-ghText', 'font-semibold');
+            textSpan.classList.add('text-ghMuted');
+
             socialPlatforms.forEach(p => {
                 document.getElementById(`handle-${p.id}`).value = '';
                 document.getElementById(`count-${p.id}`).value = '';
             });
+            renderCountryList();
             recalculate();
         }
 
@@ -728,6 +823,7 @@
         };
 
         window.onload = function() {
+            renderCountryList();
             renderPlatformGrid();
             recalculate();
         };
