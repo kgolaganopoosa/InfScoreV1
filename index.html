@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InfScore - Social Media Influence Calculator</title>
+    <title>InfScore - Social Media Influence & Brand Valuation Engine</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Inter Font -->
@@ -57,11 +57,11 @@
         
         /* Strict A4 document container for printable engine */
         .pdf-export-box {
-            width: 700px; /* Safe fit inside A4 page width with margins */
+            width: 700px;
             max-width: 700px;
             background-color: #ffffff !important;
             color: #1f2328 !important;
-            padding: 28px 32px;
+            padding: 24px 28px;
             box-sizing: border-box !important;
             border: 1px solid #d0d7de;
             margin: 0 auto;
@@ -75,7 +75,6 @@
 </head>
 <body class="min-h-full flex flex-col justify-between selection:bg-limeLight selection:text-limeAccent">
 
-    <!-- Navigation Header -->
     <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-ghBorder shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
@@ -84,7 +83,7 @@
                 </div>
                 <div>
                     <span class="text-xl font-black tracking-tight text-ghText">Inf<span class="text-limeAccent">Score</span></span>
-                    <span class="hidden sm:inline-block ml-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-limeLight text-limeAccent border border-lime-300">Auditor v2.6</span>
+                    <span class="hidden sm:inline-block ml-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-limeLight text-limeAccent border border-lime-300">Auditor & Valuation v3.0</span>
                 </div>
             </div>
             <div class="flex items-center space-x-3">
@@ -106,28 +105,28 @@
         <div class="text-center max-w-3xl mx-auto mb-8">
             <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-ghHover border border-ghBorder text-xs font-medium text-ghMuted mb-3">
                 <span class="w-2 h-2 rounded-full bg-limeAccent animate-pulse"></span>
-                <span>Verified Social Footprint Engine</span>
+                <span>Guaranteed Baseline Reach & Brand Investment Index</span>
             </div>
-            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-ghText mb-2">
-                Measure Your Social Influence
+            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-ghText mb-3">
+                Measure Your Post Reach & Brand Value
             </h1>
             <p class="text-sm text-ghMuted leading-relaxed">
-                Connect your social metrics across top channels. Your <strong class="text-ghText">InfScore</strong> represents <span class="bg-limeLight text-limeAccent px-1.5 py-0.5 rounded font-semibold">1% of your combined follower reach</span> (Total Reach ÷ 100).
+                <strong class="text-ghText">InfScore</strong> represents your <span class="bg-limeLight text-limeAccent px-1.5 py-0.5 rounded font-semibold">guaranteed baseline reach per post</span> across all top 10 social channels combined (1% of total reach). It serves as an objective standard for brands to calculate influencer investment rates (e.g. <strong>1,234 InfScore = R1,234 ZAR or ~$75 USD</strong>).
             </p>
         </div>
 
         <div class="space-y-6">
 
-            <!-- Creator Information -->
+            <!-- Creator Information Input -->
             <div class="bg-white rounded-xl border border-ghBorder p-5 sm:p-6 shadow-sm">
                 <div class="flex items-center justify-between mb-4 pb-3 border-b border-ghBorder">
                     <div class="flex items-center space-x-2.5">
                         <div class="w-7 h-7 rounded-lg bg-limeLight flex items-center justify-center text-limeAccent font-bold text-xs">
                             1
                         </div>
-                        <h2 class="text-base font-bold text-ghText">Creator Details</h2>
+                        <h2 class="text-base font-bold text-ghText">Creator Profile Details</h2>
                     </div>
-                    <span class="text-xs text-ghMuted">Required for Statement Certification</span>
+                    <span class="text-xs text-ghMuted">Required for Official Audit Statement</span>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
@@ -149,6 +148,7 @@
                             <select id="creator-country" onchange="recalculate()"
                                 class="w-full pl-9 pr-8 py-2 text-sm rounded-md border border-ghBorder bg-white text-ghText focus:outline-none focus:ring-2 focus:ring-limeAccent focus:border-transparent transition appearance-none">
                                 <option value="" disabled selected>Select country...</option>
+                                <option value="South Africa">South Africa</option>
                                 <option value="United States">United States</option>
                                 <option value="United Kingdom">United Kingdom</option>
                                 <option value="Canada">Canada</option>
@@ -158,7 +158,6 @@
                                 <option value="Brazil">Brazil</option>
                                 <option value="India">India</option>
                                 <option value="Japan">Japan</option>
-                                <option value="South Africa">South Africa</option>
                                 <option value="Singapore">Singapore</option>
                                 <option value="United Arab Emirates">United Arab Emirates</option>
                                 <option value="Other">Other Location</option>
@@ -171,17 +170,16 @@
                 </div>
             </div>
 
-            <!-- Metrics Scoreboard -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <!-- Total Audience -->
                 <div class="bg-white rounded-xl border border-ghBorder p-5 shadow-sm flex items-center justify-between">
                     <div>
-                        <p class="text-[11px] font-bold text-ghMuted uppercase tracking-wider">Total Combined Reach</p>
+                        <p class="text-[11px] font-bold text-ghMuted uppercase tracking-wider">Total Combined Audience</p>
                         <h3 id="stat-total-followers" class="text-2xl font-black text-ghText mt-1">0</h3>
-                        <p class="text-xs text-ghMuted mt-1">Sum of 10 channels</p>
+                        <p class="text-xs text-ghMuted mt-1">Across 10 Top Platforms</p>
                     </div>
-                    <div class="w-12 h-12 rounded-xl bg-ghHover border border-ghBorder flex items-center justify-center text-limeAccent">
-                        <i class="fa-solid fa-users text-xl"></i>
+                    <div class="w-11 h-11 rounded-xl bg-ghHover border border-ghBorder flex items-center justify-center text-limeAccent">
+                        <i class="fa-solid fa-users text-lg"></i>
                     </div>
                 </div>
 
@@ -189,31 +187,63 @@
                 <div class="bg-ghText text-white rounded-xl border border-ghBorder p-5 shadow-md flex items-center justify-between relative overflow-hidden">
                     <div class="absolute -right-3 -bottom-3 w-20 h-20 bg-limeAccent/30 rounded-full blur-xl pointer-events-none"></div>
                     <div>
-                        <div class="flex items-center space-x-1.5">
-                            <p class="text-[11px] font-bold text-limeGlow uppercase tracking-wider">Influence Score (InfScore)</p>
-                        </div>
-                        <h3 id="stat-inf-score" class="text-3xl font-black text-white mt-1">0.00</h3>
-                        <p class="text-[11px] text-gray-300 mt-1 font-medium">1% of total (Total × 0.01)</p>
+                        <p class="text-[11px] font-bold text-limeGlow uppercase tracking-wider">Guaranteed Reach (InfScore)</p>
+                        <h3 id="stat-inf-score" class="text-2xl font-black text-white mt-1">0.00</h3>
+                        <p class="text-[11px] text-gray-300 mt-1 font-medium">1% Baseline Post Reach</p>
                     </div>
-                    <div class="w-12 h-12 rounded-xl bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center text-limeGlow">
-                        <i class="fa-solid fa-bolt text-xl"></i>
+                    <div class="w-11 h-11 rounded-xl bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center text-limeGlow">
+                        <i class="fa-solid fa-bullhorn text-lg"></i>
                     </div>
                 </div>
 
-                <!-- Active Platforms -->
+                <!-- Brand Valuation (ZAR) -->
                 <div class="bg-white rounded-xl border border-ghBorder p-5 shadow-sm flex items-center justify-between">
                     <div>
-                        <p class="text-[11px] font-bold text-ghMuted uppercase tracking-wider">Active Channels</p>
-                        <h3 id="stat-active-platforms" class="text-2xl font-black text-ghText mt-1">0 / 10</h3>
-                        <p class="text-xs text-ghMuted mt-1">Configured platforms</p>
+                        <p class="text-[11px] font-bold text-ghMuted uppercase tracking-wider">Per-Post Investment (ZAR)</p>
+                        <h3 id="stat-val-zar" class="text-2xl font-black text-limeAccent mt-1">R0.00</h3>
+                        <p class="text-xs text-ghMuted mt-1">1 InfScore = R1.00 ZAR</p>
                     </div>
-                    <div class="w-12 h-12 rounded-xl bg-ghHover border border-ghBorder flex items-center justify-center text-limeAccent">
-                        <i class="fa-solid fa-diagram-project text-xl"></i>
+                    <div class="w-11 h-11 rounded-xl bg-limeLight border border-lime-200 flex items-center justify-center text-limeAccent font-black">
+                        R
+                    </div>
+                </div>
+
+                <!-- Brand Valuation (USD) -->
+                <div class="bg-white rounded-xl border border-ghBorder p-5 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-[11px] font-bold text-ghMuted uppercase tracking-wider">Per-Post Investment (USD)</p>
+                        <h3 id="stat-val-usd" class="text-2xl font-black text-ghText mt-1">$0.00</h3>
+                        <p class="text-xs text-ghMuted mt-1">Approx. ~$0.06 USD / point</p>
+                    </div>
+                    <div class="w-11 h-11 rounded-xl bg-ghHover border border-ghBorder flex items-center justify-center text-ghText font-black">
+                        $
                     </div>
                 </div>
             </div>
 
-            <!-- Platforms Matrix -->
+            <div class="bg-gradient-to-r from-white via-limeLight/40 to-white rounded-xl border border-lime-300 p-5 shadow-sm">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="flex items-start space-x-3.5">
+                        <div class="w-10 h-10 rounded-xl bg-limeAccent text-white flex items-center justify-center text-lg flex-shrink-0 mt-0.5 shadow">
+                            <i class="fa-solid fa-hand-holding-dollar"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-ghText">Recommended Brand Investment Benchmark</h3>
+                            <p class="text-xs text-ghMuted mt-0.5 leading-relaxed">
+                                InfScore quantifies the <strong class="text-ghText">guaranteed per-post audience engagement threshold</strong>. Brands use this metric to standardise influencer budgets fairly across single post campaigns, multi-platform releases, or video integrations.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 bg-white px-3.5 py-2 rounded-lg border border-ghBorder shadow-xs self-stretch md:self-auto justify-between md:justify-start">
+                        <div class="text-right">
+                            <p class="text-[10px] font-bold text-ghMuted uppercase">Baseline Rate Benchmark</p>
+                            <p id="valuation-example-text" class="text-xs font-black text-limeAccent">1,000 InfScore = R1,000 / $60.80</p>
+                        </div>
+                        <i class="fa-solid fa-circle-check text-limeBright text-base ml-1"></i>
+                    </div>
+                </div>
+            </div>
+
             <div id="calculator-section" class="bg-white rounded-xl border border-ghBorder p-5 sm:p-6 shadow-sm">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 pb-4 border-b border-ghBorder gap-3">
                     <div class="flex items-center space-x-2.5">
@@ -221,7 +251,7 @@
                             2
                         </div>
                         <div>
-                            <h2 class="text-base font-bold text-ghText">Top 10 Social Media Channels</h2>
+                            <h2 class="text-base font-bold text-ghText">Top 10 Social Media Platforms</h2>
                             <p class="text-xs text-ghMuted">Enter handle and audience count per network.</p>
                         </div>
                     </div>
@@ -238,15 +268,14 @@
 
         </div>
 
-        <!-- Action Banner -->
         <div class="mt-8 flex flex-col sm:flex-row items-center justify-between bg-white rounded-xl border border-ghBorder p-5 shadow-sm gap-4">
             <div class="flex items-center space-x-3.5 text-left">
                 <div class="w-10 h-10 rounded-full bg-limeLight flex items-center justify-center text-limeAccent flex-shrink-0">
                     <i class="fa-solid fa-file-invoice text-lg"></i>
                 </div>
                 <div>
-                    <h4 class="text-sm font-bold text-ghText">Download Certified Audit PDF</h4>
-                    <p class="text-xs text-ghMuted">Exports clean statement containing your profile metadata and verified channel counts.</p>
+                    <h4 class="text-sm font-bold text-ghText">Download Certified Audit & Valuation Statement</h4>
+                    <p class="text-xs text-ghMuted">Exports clean single-page PDF containing creator details, guaranteed post reach, and brand valuation index.</p>
                 </div>
             </div>
             <button onclick="openPDFModal()" class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-2.5 text-xs font-bold rounded-md bg-limeAccent text-white hover:bg-limeBright transition shadow-sm focus:ring-2 focus:ring-lime-500">
@@ -257,7 +286,6 @@
 
     </main>
 
-    <!-- Footer -->
     <footer class="bg-white border-t border-ghBorder mt-16 text-ghMuted text-xs">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center space-x-2">
@@ -281,7 +309,7 @@
                     <i class="fa-solid fa-file-pdf text-limeAccent text-xl"></i>
                     <div>
                         <h3 class="font-bold text-ghText text-base">InfScore Audit Statement Preview</h3>
-                        <p class="text-xs text-ghMuted">A4 single-page print statement preview.</p>
+                        <p class="text-xs text-ghMuted">A4 single-page print statement preview with valuation index.</p>
                     </div>
                 </div>
                 <button onclick="closeModal('pdfModal')" class="text-ghMuted hover:text-ghText p-1 rounded-lg hover:bg-ghHover transition">
@@ -291,7 +319,6 @@
             
             <!-- Scrollable Document Preview Area -->
             <div class="p-4 sm:p-6 overflow-y-auto bg-gray-200 flex justify-center">
-                <!-- Preview Container -->
                 <div id="pdf-modal-preview-content" class="shadow-lg rounded-sm overflow-hidden bg-white">
                     <!-- Injected dynamically -->
                 </div>
@@ -332,10 +359,10 @@
             </div>
             <div class="p-6 overflow-y-auto space-y-3 text-ghText text-xs sm:text-sm leading-relaxed">
                 <p class="text-ghMuted text-xs">Last updated: October 2026</p>
-                <h4 class="font-bold text-ghText">1. Local Client Processing</h4>
-                <p>InfScore operates entirely inside your web browser. Handles, names, and subscriber numbers are calculated locally in client memory and are never transmitted to external databases.</p>
-                <h4 class="font-bold text-ghText">2. Document Security</h4>
-                <p>Generated PDF statements are constructed directly in your browser session using standard DOM-to-Canvas compilation.</p>
+                <h4 class="font-bold text-ghText">1. Local Browser Calculation</h4>
+                <p>InfScore calculates guaranteed post reach and brand valuation locally inside your browser memory. Input data is never sent or sold to third-party databases.</p>
+                <h4 class="font-bold text-ghText">2. PDF Export Privacy</h4>
+                <p>Generated PDF reports are processed instantly via client-side vector compilation.</p>
             </div>
             <div class="px-6 py-3 border-t border-ghBorder bg-ghBg flex justify-end">
                 <button onclick="closeModal('privacyModal')" class="px-4 py-1.5 text-xs font-semibold rounded-md bg-ghText text-white hover:bg-gray-800 transition">Close</button>
@@ -357,8 +384,10 @@
             </div>
             <div class="p-6 overflow-y-auto space-y-3 text-ghText text-xs sm:text-sm leading-relaxed">
                 <p class="text-ghMuted text-xs">Effective date: October 2026</p>
-                <h4 class="font-bold text-ghText">1. Influence Indexing Standard</h4>
-                <p>The InfScore formula standardizes social reach across 10 major networks by calculating 1% of total verified combined reach (Total Reach / 100).</p>
+                <h4 class="font-bold text-ghText">1. Guaranteed Reach Standard</h4>
+                <p>InfScore calculates a 1% baseline per-post reach benchmark across combined follower footprints across the 10 supported platforms.</p>
+                <h4 class="font-bold text-ghText">2. Investment Valuation Benchmark</h4>
+                <p>Recommended brand investment calculations (1 InfScore = R1.00 ZAR = ~$0.06 USD) serve as baseline rate suggestions for creator partnerships.</p>
             </div>
             <div class="px-6 py-3 border-t border-ghBorder bg-ghBg flex justify-end">
                 <button onclick="closeModal('termsUseModal')" class="px-4 py-1.5 text-xs font-semibold rounded-md bg-ghText text-white hover:bg-gray-800 transition">Close</button>
@@ -380,8 +409,8 @@
             </div>
             <div class="p-6 overflow-y-auto space-y-3 text-ghText text-xs sm:text-sm leading-relaxed">
                 <p class="text-ghMuted text-xs">General Terms</p>
-                <h4 class="font-bold text-ghText">1. User Verification Responsibility</h4>
-                <p>Users are responsible for accurately representing their official social handles and audience statistics when generating certified PDF export statements.</p>
+                <h4 class="font-bold text-ghText">1. Accuracy of Representation</h4>
+                <p>Users are responsible for entering honest subscriber and follower metrics when generating export certificates for brand sponsorship proposals.</p>
             </div>
             <div class="px-6 py-3 border-t border-ghBorder bg-ghBg flex justify-end">
                 <button onclick="closeModal('termsCondModal')" class="px-4 py-1.5 text-xs font-semibold rounded-md bg-ghText text-white hover:bg-gray-800 transition">Close</button>
@@ -390,13 +419,16 @@
     </div>
 
     <script>
-        // Definition of the 10 Social Media Platforms
+        // Exchange conversion constant (1 ZAR = ~$0.0608 USD)
+        const ZAR_TO_USD_RATE = 0.0608;
+
+        // Definition of the 10 Top Social Platforms
         const socialPlatforms = [
             { id: 'youtube', name: 'YouTube', icon: 'fa-brands fa-youtube', color: '#dc2626', bg: '#fef2f2', placeholder: '@channel' },
             { id: 'instagram', name: 'Instagram', icon: 'fa-brands fa-instagram', color: '#db2777', bg: '#fdf2f8', placeholder: '@username' },
             { id: 'tiktok', name: 'TikTok', icon: 'fa-brands fa-tiktok', color: '#000000', bg: '#f3f4f6', placeholder: '@handle' },
             { id: 'twitter', name: 'X (Twitter)', icon: 'fa-brands fa-x-twitter', color: '#000000', bg: '#f3f4f6', placeholder: '@handle' },
-            { id: 'facebook', name: 'Facebook', icon: 'fa-brands fa-facebook', color: '#2563eb', bg: '#eff6ff', placeholder: 'Page / Profile name' },
+            { id: 'facebook', name: 'Facebook', icon: 'fa-brands fa-facebook', color: '#2563eb', bg: '#eff6ff', placeholder: 'Page / Profile' },
             { id: 'linkedin', name: 'LinkedIn', icon: 'fa-brands fa-linkedin-in', color: '#1d4ed8', bg: '#eff6ff', placeholder: 'in/username' },
             { id: 'pinterest', name: 'Pinterest', icon: 'fa-brands fa-pinterest', color: '#b91c1c', bg: '#fef2f2', placeholder: '@username' },
             { id: 'snapchat', name: 'Snapchat', icon: 'fa-brands fa-snapchat', color: '#ca8a04', bg: '#fefce8', placeholder: '@username' },
@@ -441,7 +473,6 @@
             grid.innerHTML = html;
         }
 
-        // Collect Current User Input Data
         function getData() {
             const userName = document.getElementById('creator-name').value.trim() || 'Unspecified Creator';
             const userCountry = document.getElementById('creator-country').value || 'Unspecified Location';
@@ -470,8 +501,14 @@
                 });
             });
 
-            // Influence Score formula: Total Followers * 0.01 (1% of Total)
+            // Guaranteed Baseline Reach = 1% of Total Combined Reach (Total * 0.01)
             const infScore = totalFollowers * 0.01;
+
+            // Brand Investment Valuation Formulas:
+            // 1 InfScore = R1.00 ZAR
+            // 1 InfScore = $0.0608 USD
+            const valZar = infScore;
+            const valUsd = infScore * ZAR_TO_USD_RATE;
 
             const now = new Date();
             const formattedDate = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -482,6 +519,8 @@
                 userCountry,
                 totalFollowers,
                 infScore,
+                valZar,
+                valUsd,
                 activeCount,
                 rows,
                 formattedDate,
@@ -489,15 +528,19 @@
             };
         }
 
-        // Recalculate Dashboard Display Cards
         function recalculate() {
             const data = getData();
             document.getElementById('stat-total-followers').innerText = data.totalFollowers.toLocaleString();
             document.getElementById('stat-inf-score').innerText = data.infScore.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            document.getElementById('stat-active-platforms').innerText = `${data.activeCount} / 10`;
+            document.getElementById('stat-val-zar').innerText = 'R ' + data.valZar.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('stat-val-usd').innerText = '$ ' + data.valUsd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            const exText = data.infScore > 0 
+                ? `${data.infScore.toLocaleString(undefined, {maximumFractionDigits: 0})} InfScore = R${data.valZar.toLocaleString(undefined, {maximumFractionDigits: 0})} ZAR or ~$${data.valUsd.toLocaleString(undefined, {maximumFractionDigits: 0})} USD`
+                : '1,234 InfScore = R1,234 ZAR or ~$75 USD';
+            document.getElementById('valuation-example-text').innerText = exText;
         }
 
-        // Construct A4-safe HTML markup string without right margin clipping
         function buildPDFStatementMarkup(data) {
             let tableRows = '';
             
@@ -506,79 +549,89 @@
                 const rowBg = idx % 2 === 0 ? '#ffffff' : '#fcfdfd';
                 tableRows += `
                     <tr style="border-bottom: 1px solid #e1e4e8; background-color: ${rowBg};">
-                        <td style="padding: 7px 10px; font-size: 11px; font-weight: 600; color: #1f2328; width: 32%;">
-                            <i class="${p.icon}" style="color: ${p.color}; margin-right: 6px; width: 14px; text-align: center;"></i>
+                        <td style="padding: 6px 8px; font-size: 10px; font-weight: 600; color: #1f2328; width: 32%;">
+                            <i class="${p.icon}" style="color: ${p.color}; margin-right: 5px; width: 12px; text-align: center;"></i>
                             ${p.name}
                         </td>
-                        <td style="padding: 7px 10px; font-size: 11px; color: #57606a; font-family: monospace; width: 38%; word-break: break-all;">${p.handle}</td>
-                        <td style="padding: 7px 10px; font-size: 11px; font-weight: 700; color: #1f2328; text-align: right; font-family: monospace; width: 30%;">${formattedCount}</td>
+                        <td style="padding: 6px 8px; font-size: 10px; color: #57606a; font-family: monospace; width: 38%; word-break: break-all;">${p.handle}</td>
+                        <td style="padding: 6px 8px; font-size: 10px; font-weight: 700; color: #1f2328; text-align: right; font-family: monospace; width: 30%;">${formattedCount}</td>
                     </tr>
                 `;
             });
 
             return `
                 <div class="pdf-export-box" id="pdf-statement-canvas">
-                    <!-- Statement Header -->
-                    <div style="display: table; width: 100%; border-bottom: 3px solid #1a7f37; padding-bottom: 12px; margin-bottom: 16px;">
+                    <!-- Header -->
+                    <div style="display: table; width: 100%; border-bottom: 3px solid #1a7f37; padding-bottom: 10px; margin-bottom: 12px;">
                         <div style="display: table-cell; vertical-align: middle; width: 65%;">
-                            <div style="display: inline-block; vertical-align: middle; width: 36px; height: 36px; background-color: #1f2328; color: #2aea62; border-radius: 6px; font-weight: 900; font-size: 16px; text-align: center; line-height: 36px; margin-right: 10px;">
+                            <div style="display: inline-block; vertical-align: middle; width: 32px; height: 32px; background-color: #1f2328; color: #2aea62; border-radius: 6px; font-weight: 900; font-size: 14px; text-align: center; line-height: 32px; margin-right: 8px;">
                                 IS
                             </div>
                             <div style="display: inline-block; vertical-align: middle;">
-                                <h1 style="font-size: 18px; font-weight: 800; color: #1f2328; margin: 0; line-height: 1.1;">InfScore Audit Statement</h1>
-                                <p style="font-size: 9px; font-weight: 700; color: #636c76; text-transform: uppercase; letter-spacing: 0.5px; margin: 2px 0 0 0;">Official Digital Reach Certificate</p>
+                                <h1 style="font-size: 16px; font-weight: 800; color: #1f2328; margin: 0; line-height: 1.1;">InfScore Audit Statement</h1>
+                                <p style="font-size: 8.5px; font-weight: 700; color: #636c76; text-transform: uppercase; letter-spacing: 0.5px; margin: 2px 0 0 0;">Guaranteed Reach & Brand Investment Report</p>
                             </div>
                         </div>
                         <div style="display: table-cell; vertical-align: middle; text-align: right; width: 35%;">
-                            <p style="font-size: 10px; font-weight: 600; color: #1f2328; margin: 0;">Date: ${data.formattedDate}</p>
-                            <p style="font-size: 9px; color: #636c76; margin: 2px 0 0 0; font-family: monospace;">ID: ${data.statementId}</p>
-                            <span style="display: inline-block; margin-top: 3px; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 700; background-color: #dafbe1; color: #1a7f37; border: 1px solid #9be9a8;">Verified Output</span>
+                            <p style="font-size: 9px; font-weight: 600; color: #1f2328; margin: 0;">Date: ${data.formattedDate}</p>
+                            <p style="font-size: 8.5px; color: #636c76; margin: 1px 0 0 0; font-family: monospace;">ID: ${data.statementId}</p>
+                            <span style="display: inline-block; margin-top: 2px; padding: 1px 5px; border-radius: 4px; font-size: 8px; font-weight: 700; background-color: #dafbe1; color: #1a7f37; border: 1px solid #9be9a8;">Verified Baseline</span>
                         </div>
                     </div>
 
-                    <!-- Creator Details Summary Box -->
-                    <div style="background-color: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 12px 14px; margin-bottom: 16px; display: table; width: 100%; box-sizing: border-box;">
-                        <div style="display: table-cell; width: 50%; vertical-align: top; padding-right: 10px;">
-                            <p style="font-size: 9px; font-weight: 700; color: #636c76; text-transform: uppercase; margin: 0 0 3px 0;">Creator / Brand Name</p>
-                            <p style="font-size: 13px; font-weight: 700; color: #1f2328; margin: 0; word-break: break-word;">${data.userName}</p>
+                    <!-- Creator Details -->
+                    <div style="background-color: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 10px 12px; margin-bottom: 12px; display: table; width: 100%; box-sizing: border-box;">
+                        <div style="display: table-cell; width: 50%; vertical-align: top; padding-right: 8px;">
+                            <p style="font-size: 8.5px; font-weight: 700; color: #636c76; text-transform: uppercase; margin: 0 0 2px 0;">Creator / Brand Name</p>
+                            <p style="font-size: 12px; font-weight: 700; color: #1f2328; margin: 0; word-break: break-word;">${data.userName}</p>
                         </div>
-                        <div style="display: table-cell; width: 50%; vertical-align: top; padding-left: 10px;">
-                            <p style="font-size: 9px; font-weight: 700; color: #636c76; text-transform: uppercase; margin: 0 0 3px 0;">Country of Origin</p>
-                            <p style="font-size: 13px; font-weight: 700; color: #1f2328; margin: 0; word-break: break-word;">${data.userCountry}</p>
+                        <div style="display: table-cell; width: 50%; vertical-align: top; padding-left: 8px;">
+                            <p style="font-size: 8.5px; font-weight: 700; color: #636c76; text-transform: uppercase; margin: 0 0 2px 0;">Country of Origin</p>
+                            <p style="font-size: 12px; font-weight: 700; color: #1f2328; margin: 0; word-break: break-word;">${data.userCountry}</p>
                         </div>
                     </div>
 
-                    <!-- Main Score Summary Box -->
-                    <div style="background-color: #1f2328; color: #ffffff; border-radius: 8px; padding: 14px 18px; margin-bottom: 16px; display: table; width: 100%; box-sizing: border-box;">
-                        <div style="display: table-cell; vertical-align: middle; width: 60%;">
-                            <p style="font-size: 10px; font-weight: 700; color: #2aea62; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 2px 0;">Calculated InfScore (1% Index)</p>
-                            <h2 style="font-size: 26px; font-weight: 800; color: #ffffff; margin: 0; font-family: monospace;">${data.infScore.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h2>
-                            <p style="font-size: 9px; color: #adbac7; margin: 2px 0 0 0;">Formula: Combined Followers (${data.totalFollowers.toLocaleString()}) × 0.01</p>
+                    <!-- Score Highlight & Valuation Matrix -->
+                    <div style="background-color: #1f2328; color: #ffffff; border-radius: 6px; padding: 12px 14px; margin-bottom: 12px; display: table; width: 100%; box-sizing: border-box;">
+                        <div style="display: table-cell; vertical-align: middle; width: 50%;">
+                            <p style="font-size: 9px; font-weight: 700; color: #2aea62; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 1px 0;">Guaranteed Reach (InfScore)</p>
+                            <h2 style="font-size: 22px; font-weight: 800; color: #ffffff; margin: 0; font-family: monospace;">${data.infScore.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h2>
+                            <p style="font-size: 8px; color: #adbac7; margin: 2px 0 0 0;">1% Baseline Reach per post (Total / 100)</p>
                         </div>
-                        <div style="display: table-cell; vertical-align: middle; text-align: right; width: 40%;">
-                            <div style="background-color: rgba(255, 255, 255, 0.1); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.15); display: inline-block; text-align: right; width: 100%;">
-                                <p style="font-size: 9px; font-weight: 600; color: #adbac7; text-transform: uppercase; margin: 0 0 2px 0;">Total Combined Reach</p>
-                                <p style="font-size: 18px; font-weight: 700; color: #ffffff; margin: 0; font-family: monospace;">${data.totalFollowers.toLocaleString()}</p>
+                        <div style="display: table-cell; vertical-align: middle; text-align: right; width: 50%;">
+                            <div style="background-color: rgba(255, 255, 255, 0.08); padding: 8px 10px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.15); text-align: right;">
+                                <p style="font-size: 8px; font-weight: 700; color: #2aea62; text-transform: uppercase; margin: 0 0 2px 0;">Rec. Brand Investment / Post</p>
+                                <p style="font-size: 13px; font-weight: 800; color: #ffffff; margin: 0; font-family: monospace;">
+                                    R ${data.valZar.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ZAR
+                                </p>
+                                <p style="font-size: 10px; font-weight: 600; color: #d0d7de; margin: 1px 0 0 0; font-family: monospace;">
+                                    ~ $ ${data.valUsd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD
+                                </p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Platform Breakdown Table -->
-                    <div style="margin-bottom: 16px;">
-                        <div style="display: table; width: 100%; margin-bottom: 6px;">
-                            <div style="display: table-cell; font-size: 10px; font-weight: 700; color: #1f2328; text-transform: uppercase; letter-spacing: 0.5px;">
-                                Social Channel Audit (Top 10 Networks)
+                    <!-- Guaranteed Reach Note -->
+                    <div style="background-color: #dafbe1; border: 1px solid #9be9a8; border-radius: 6px; padding: 8px 10px; margin-bottom: 12px; font-size: 8.5px; color: #1a7f37; line-height: 1.3;">
+                        <strong>Guaranteed Baseline Reach Definition:</strong> The InfScore represents the minimum guaranteed baseline organic post impressions when posting across all top 10 channels. Recommended brand investment formula: 1 InfScore = R1.00 ZAR = ~$0.06 USD per post.
+                    </div>
+
+                    <!-- Platforms Table -->
+                    <div style="margin-bottom: 12px;">
+                        <div style="display: table; width: 100%; margin-bottom: 4px;">
+                            <div style="display: table-cell; font-size: 9px; font-weight: 700; color: #1f2328; text-transform: uppercase; letter-spacing: 0.5px;">
+                                Top 10 Social Media Footprint
                             </div>
-                            <div style="display: table-cell; text-align: right; font-size: 9px; color: #636c76;">
-                                Configured: ${data.activeCount} / 10
+                            <div style="display: table-cell; text-align: right; font-size: 8.5px; color: #636c76;">
+                                Total Combined Reach: <strong>${data.totalFollowers.toLocaleString()}</strong>
                             </div>
                         </div>
                         <table style="width: 100%; border-collapse: collapse; border: 1px solid #d0d7de; border-radius: 6px; overflow: hidden; table-layout: fixed;">
                             <thead>
                                 <tr style="background-color: #f6f8fa; border-bottom: 1px solid #d0d7de; text-align: left;">
-                                    <th style="padding: 7px 10px; font-size: 9px; font-weight: 700; color: #636c76; text-transform: uppercase; width: 32%;">Platform</th>
-                                    <th style="padding: 7px 10px; font-size: 9px; font-weight: 700; color: #636c76; text-transform: uppercase; width: 38%;">Handle / Username</th>
-                                    <th style="padding: 7px 10px; font-size: 9px; font-weight: 700; color: #636c76; text-transform: uppercase; text-align: right; width: 30%;">Audience Reach</th>
+                                    <th style="padding: 5px 8px; font-size: 8.5px; font-weight: 700; color: #636c76; text-transform: uppercase; width: 32%;">Platform</th>
+                                    <th style="padding: 5px 8px; font-size: 8.5px; font-weight: 700; color: #636c76; text-transform: uppercase; width: 38%;">Handle / Username</th>
+                                    <th style="padding: 5px 8px; font-size: 8.5px; font-weight: 700; color: #636c76; text-transform: uppercase; text-align: right; width: 30%;">Audience Reach</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -588,15 +641,14 @@
                     </div>
 
                     <!-- Certification Footer -->
-                    <div style="padding-top: 12px; border-top: 1px solid #d0d7de; text-align: center; font-size: 9px; color: #636c76; line-height: 1.4;">
-                        <p style="margin: 0;">This official document certifies the calculated social media reach index generated via InfScore Engine on ${data.formattedDate}.</p>
-                        <p style="margin: 2px 0 0 0;">&copy; 2026 InfScore Brand. All rights reserved. Self-reported verified audit certificate.</p>
+                    <div style="padding-top: 8px; border-top: 1px solid #d0d7de; text-align: center; font-size: 8px; color: #636c76; line-height: 1.3;">
+                        <p style="margin: 0;">This official audit statement certifies guaranteed baseline reach and recommended brand investment parameters as generated on ${data.formattedDate}.</p>
+                        <p style="margin: 2px 0 0 0;">&copy; 2026 InfScore Brand. All rights reserved.</p>
                     </div>
                 </div>
             `;
         }
 
-        // Open PDF Preview Modal with live rendering
         function openPDFModal() {
             const data = getData();
             const previewHost = document.getElementById('pdf-modal-preview-content');
@@ -604,12 +656,9 @@
             openModal('pdfModal');
         }
 
-        // Execute Download reliably using html2pdf.js
         function downloadPDF() {
             const data = getData();
             const hiddenHost = document.getElementById('pdf-hidden-host');
-            
-            // Inject pure styled HTML block into hidden container
             hiddenHost.innerHTML = buildPDFStatementMarkup(data);
 
             const btn = document.getElementById('download-btn');
@@ -618,8 +667,8 @@
             btn.disabled = true;
 
             const opt = {
-                margin:       [10, 10, 10, 10],
-                filename:     `InfScore_Statement_${data.userName.replace(/\s+/g, '_')}.pdf`,
+                margin:       [8, 8, 8, 8],
+                filename:     `InfScore_Valuation_${data.userName.replace(/\s+/g, '_')}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { 
                     scale: 2, 
@@ -632,7 +681,6 @@
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            // Double frame delay ensures full DOM painting before canvas capture
             requestAnimationFrame(() => {
                 setTimeout(() => {
                     const targetElement = hiddenHost.firstElementChild;
@@ -644,7 +692,7 @@
                         console.error('PDF Generation Error:', err);
                         btn.innerHTML = originalBtnHtml;
                         btn.disabled = false;
-                        alert('Statement export failed. Please try again.');
+                        alert('PDF export encountered an error. Please try again.');
                     });
                 }, 200);
             });
