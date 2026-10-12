@@ -55,15 +55,21 @@
             background: #8c959f;
         }
         
-        /* Dedicated PDF printable layout specifications */
+        /* Strict A4 document container for printable engine */
         .pdf-export-box {
-            width: 794px; /* Standard A4 width at 96 DPI */
+            width: 700px; /* Safe fit inside A4 page width with margins */
+            max-width: 700px;
             background-color: #ffffff !important;
             color: #1f2328 !important;
-            padding: 40px;
-            box-sizing: border-box;
+            padding: 28px 32px;
+            box-sizing: border-box !important;
             border: 1px solid #d0d7de;
             margin: 0 auto;
+            overflow: hidden;
+            word-wrap: break-word;
+        }
+        .pdf-export-box * {
+            box-sizing: border-box !important;
         }
     </style>
 </head>
@@ -78,7 +84,7 @@
                 </div>
                 <div>
                     <span class="text-xl font-black tracking-tight text-ghText">Inf<span class="text-limeAccent">Score</span></span>
-                    <span class="hidden sm:inline-block ml-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-limeLight text-limeAccent border border-lime-300">Auditor v2.5</span>
+                    <span class="hidden sm:inline-block ml-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-limeLight text-limeAccent border border-lime-300">Auditor v2.6</span>
                 </div>
             </div>
             <div class="flex items-center space-x-3">
@@ -275,7 +281,7 @@
                     <i class="fa-solid fa-file-pdf text-limeAccent text-xl"></i>
                     <div>
                         <h3 class="font-bold text-ghText text-base">InfScore Audit Statement Preview</h3>
-                        <p class="text-xs text-ghMuted">Verified print statement rendering below.</p>
+                        <p class="text-xs text-ghMuted">A4 single-page print statement preview.</p>
                     </div>
                 </div>
                 <button onclick="closeModal('pdfModal')" class="text-ghMuted hover:text-ghText p-1 rounded-lg hover:bg-ghHover transition">
@@ -293,7 +299,7 @@
 
             <!-- Modal Footer Actions -->
             <div class="px-6 py-4 border-t border-ghBorder bg-ghBg flex flex-col sm:flex-row items-center justify-between gap-3">
-                <span class="text-xs text-ghMuted">Engine: html2pdf.js / high-resolution vector canvas</span>
+                <span class="text-xs text-ghMuted">A4 Scaled Vector Capture Engine</span>
                 <div class="flex items-center space-x-3 w-full sm:w-auto">
                     <button onclick="closeModal('pdfModal')" class="w-1/2 sm:w-auto px-4 py-2 text-xs font-semibold rounded-md border border-ghBorder text-ghText bg-white hover:bg-ghHover transition">
                         Close
@@ -307,8 +313,8 @@
         </div>
     </div>
 
-    <!-- Hidden Printable DOM Container (Guarantees standard print render capture) -->
-    <div style="position: absolute; left: -9999px; top: -9999px; width: 800px;" id="pdf-hidden-host">
+    <!-- Hidden Printable DOM Container for html2pdf conversion -->
+    <div style="position: absolute; left: -9999px; top: -9999px; width: 700px;" id="pdf-hidden-host">
         <!-- Render target injected here before html2pdf capture -->
     </div>
 
@@ -384,7 +390,7 @@
     </div>
 
     <script>
-        // Definition of the 10 Platforms
+        // Definition of the 10 Social Media Platforms
         const socialPlatforms = [
             { id: 'youtube', name: 'YouTube', icon: 'fa-brands fa-youtube', color: '#dc2626', bg: '#fef2f2', placeholder: '@channel' },
             { id: 'instagram', name: 'Instagram', icon: 'fa-brands fa-instagram', color: '#db2777', bg: '#fdf2f8', placeholder: '@username' },
@@ -438,7 +444,7 @@
         // Collect Current User Input Data
         function getData() {
             const userName = document.getElementById('creator-name').value.trim() || 'Unspecified Creator';
-            const userCountry = document.getElementById('creator-country').value || 'Unspecified Country';
+            const userCountry = document.getElementById('creator-country').value || 'Unspecified Location';
             
             let totalFollowers = 0;
             let activeCount = 0;
@@ -469,6 +475,7 @@
 
             const now = new Date();
             const formattedDate = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            const statementId = 'INF-' + Math.floor(100000 + Math.random() * 900000);
 
             return {
                 userName,
@@ -477,7 +484,8 @@
                 infScore,
                 activeCount,
                 rows,
-                formattedDate
+                formattedDate,
+                statementId
             };
         }
 
@@ -489,77 +497,88 @@
             document.getElementById('stat-active-platforms').innerText = `${data.activeCount} / 10`;
         }
 
-        // Construct HTML markup string specifically tailored for PDF rendering
+        // Construct A4-safe HTML markup string without right margin clipping
         function buildPDFStatementMarkup(data) {
             let tableRows = '';
             
-            data.rows.forEach(p => {
+            data.rows.forEach((p, idx) => {
                 const formattedCount = p.count > 0 ? p.count.toLocaleString() : '0';
+                const rowBg = idx % 2 === 0 ? '#ffffff' : '#fcfdfd';
                 tableRows += `
-                    <tr style="border-bottom: 1px solid #d0d7de;">
-                        <td style="padding: 10px 12px; font-size: 12px; font-weight: 600; color: #1f2328;">
-                            <i class="${p.icon}" style="color: ${p.color}; margin-right: 8px; width: 16px; text-align: center;"></i>
+                    <tr style="border-bottom: 1px solid #e1e4e8; background-color: ${rowBg};">
+                        <td style="padding: 7px 10px; font-size: 11px; font-weight: 600; color: #1f2328; width: 32%;">
+                            <i class="${p.icon}" style="color: ${p.color}; margin-right: 6px; width: 14px; text-align: center;"></i>
                             ${p.name}
                         </td>
-                        <td style="padding: 10px 12px; font-size: 12px; color: #636c76; font-family: monospace;">${p.handle}</td>
-                        <td style="padding: 10px 12px; font-size: 12px; font-weight: 700; color: #1f2328; text-align: right; font-family: monospace;">${formattedCount}</td>
+                        <td style="padding: 7px 10px; font-size: 11px; color: #57606a; font-family: monospace; width: 38%; word-break: break-all;">${p.handle}</td>
+                        <td style="padding: 7px 10px; font-size: 11px; font-weight: 700; color: #1f2328; text-align: right; font-family: monospace; width: 30%;">${formattedCount}</td>
                     </tr>
                 `;
             });
 
             return `
-                <div class="pdf-export-box">
+                <div class="pdf-export-box" id="pdf-statement-canvas">
                     <!-- Statement Header -->
-                    <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 3px solid #1a7f37; margin-bottom: 24px;">
-                        <div style="display: flex; items-center: center;">
-                            <div style="width: 42px; height: 42px; background-color: #1f2328; color: #2aea62; border-radius: 8px; font-weight: 900; font-size: 18px; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+                    <div style="display: table; width: 100%; border-bottom: 3px solid #1a7f37; padding-bottom: 12px; margin-bottom: 16px;">
+                        <div style="display: table-cell; vertical-align: middle; width: 65%;">
+                            <div style="display: inline-block; vertical-align: middle; width: 36px; height: 36px; background-color: #1f2328; color: #2aea62; border-radius: 6px; font-weight: 900; font-size: 16px; text-align: center; line-height: 36px; margin-right: 10px;">
                                 IS
                             </div>
-                            <div>
-                                <h1 style="font-size: 20px; font-weight: 800; color: #1f2328; margin: 0; line-height: 1.2;">InfScore Statement</h1>
-                                <p style="font-size: 10px; font-weight: 700; color: #636c76; text-transform: uppercase; letter-spacing: 0.5px; margin: 2px 0 0 0;">Official Digital Reach Certificate</p>
+                            <div style="display: inline-block; vertical-align: middle;">
+                                <h1 style="font-size: 18px; font-weight: 800; color: #1f2328; margin: 0; line-height: 1.1;">InfScore Audit Statement</h1>
+                                <p style="font-size: 9px; font-weight: 700; color: #636c76; text-transform: uppercase; letter-spacing: 0.5px; margin: 2px 0 0 0;">Official Digital Reach Certificate</p>
                             </div>
                         </div>
-                        <div style="text-align: right;">
-                            <p style="font-size: 11px; font-weight: 600; color: #1f2328; margin: 0;">Date: ${data.formattedDate}</p>
-                            <span style="display: inline-block; margin-top: 4px; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; background-color: #dafbe1; color: #1a7f37; border: 1px solid #9be9a8;">Verified Audit Sheet</span>
+                        <div style="display: table-cell; vertical-align: middle; text-align: right; width: 35%;">
+                            <p style="font-size: 10px; font-weight: 600; color: #1f2328; margin: 0;">Date: ${data.formattedDate}</p>
+                            <p style="font-size: 9px; color: #636c76; margin: 2px 0 0 0; font-family: monospace;">ID: ${data.statementId}</p>
+                            <span style="display: inline-block; margin-top: 3px; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 700; background-color: #dafbe1; color: #1a7f37; border: 1px solid #9be9a8;">Verified Output</span>
                         </div>
                     </div>
 
                     <!-- Creator Details Summary Box -->
-                    <div style="background-color: #f6f8fa; border: 1px solid #d0d7de; border-radius: 8px; padding: 16px; margin-bottom: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                        <div>
-                            <p style="font-size: 10px; font-weight: 700; color: #636c76; text-transform: uppercase; margin: 0 0 4px 0;">Creator / Brand Name</p>
-                            <p style="font-size: 15px; font-weight: 700; color: #1f2328; margin: 0;">${data.userName}</p>
+                    <div style="background-color: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 12px 14px; margin-bottom: 16px; display: table; width: 100%; box-sizing: border-box;">
+                        <div style="display: table-cell; width: 50%; vertical-align: top; padding-right: 10px;">
+                            <p style="font-size: 9px; font-weight: 700; color: #636c76; text-transform: uppercase; margin: 0 0 3px 0;">Creator / Brand Name</p>
+                            <p style="font-size: 13px; font-weight: 700; color: #1f2328; margin: 0; word-break: break-word;">${data.userName}</p>
                         </div>
-                        <div>
-                            <p style="font-size: 10px; font-weight: 700; color: #636c76; text-transform: uppercase; margin: 0 0 4px 0;">Country of Origin</p>
-                            <p style="font-size: 15px; font-weight: 700; color: #1f2328; margin: 0;">${data.userCountry}</p>
+                        <div style="display: table-cell; width: 50%; vertical-align: top; padding-left: 10px;">
+                            <p style="font-size: 9px; font-weight: 700; color: #636c76; text-transform: uppercase; margin: 0 0 3px 0;">Country of Origin</p>
+                            <p style="font-size: 13px; font-weight: 700; color: #1f2328; margin: 0; word-break: break-word;">${data.userCountry}</p>
                         </div>
                     </div>
 
                     <!-- Main Score Summary Box -->
-                    <div style="background-color: #1f2328; color: #ffffff; border-radius: 10px; padding: 20px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between;">
-                        <div>
-                            <p style="font-size: 11px; font-weight: 700; color: #2aea62; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 4px 0;">Calculated InfScore (1% Index)</p>
-                            <h2 style="font-size: 32px; font-weight: 800; color: #ffffff; margin: 0; font-family: monospace;">${data.infScore.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h2>
-                            <p style="font-size: 10px; color: #adbac7; margin: 4px 0 0 0;">Formula: Combined Followers (${data.totalFollowers.toLocaleString()}) ÷ 100</p>
+                    <div style="background-color: #1f2328; color: #ffffff; border-radius: 8px; padding: 14px 18px; margin-bottom: 16px; display: table; width: 100%; box-sizing: border-box;">
+                        <div style="display: table-cell; vertical-align: middle; width: 60%;">
+                            <p style="font-size: 10px; font-weight: 700; color: #2aea62; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 2px 0;">Calculated InfScore (1% Index)</p>
+                            <h2 style="font-size: 26px; font-weight: 800; color: #ffffff; margin: 0; font-family: monospace;">${data.infScore.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h2>
+                            <p style="font-size: 9px; color: #adbac7; margin: 2px 0 0 0;">Formula: Combined Followers (${data.totalFollowers.toLocaleString()}) × 0.01</p>
                         </div>
-                        <div style="text-align: right; background-color: rgba(255, 255, 255, 0.1); padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.15);">
-                            <p style="font-size: 10px; font-weight: 600; color: #adbac7; text-transform: uppercase; margin: 0 0 2px 0;">Total Combined Reach</p>
-                            <p style="font-size: 20px; font-weight: 700; color: #ffffff; margin: 0; font-family: monospace;">${data.totalFollowers.toLocaleString()}</p>
+                        <div style="display: table-cell; vertical-align: middle; text-align: right; width: 40%;">
+                            <div style="background-color: rgba(255, 255, 255, 0.1); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.15); display: inline-block; text-align: right; width: 100%;">
+                                <p style="font-size: 9px; font-weight: 600; color: #adbac7; text-transform: uppercase; margin: 0 0 2px 0;">Total Combined Reach</p>
+                                <p style="font-size: 18px; font-weight: 700; color: #ffffff; margin: 0; font-family: monospace;">${data.totalFollowers.toLocaleString()}</p>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Platform Breakdown Table -->
-                    <div style="margin-bottom: 24px;">
-                        <h3 style="font-size: 11px; font-weight: 700; color: #1f2328; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 8px 0;">Social Channel Audit</h3>
-                        <table style="width: 100%; border-collapse: collapse; border: 1px solid #d0d7de; border-radius: 8px; overflow: hidden;">
+                    <div style="margin-bottom: 16px;">
+                        <div style="display: table; width: 100%; margin-bottom: 6px;">
+                            <div style="display: table-cell; font-size: 10px; font-weight: 700; color: #1f2328; text-transform: uppercase; letter-spacing: 0.5px;">
+                                Social Channel Audit (Top 10 Networks)
+                            </div>
+                            <div style="display: table-cell; text-align: right; font-size: 9px; color: #636c76;">
+                                Configured: ${data.activeCount} / 10
+                            </div>
+                        </div>
+                        <table style="width: 100%; border-collapse: collapse; border: 1px solid #d0d7de; border-radius: 6px; overflow: hidden; table-layout: fixed;">
                             <thead>
                                 <tr style="background-color: #f6f8fa; border-bottom: 1px solid #d0d7de; text-align: left;">
-                                    <th style="padding: 8px 12px; font-size: 10px; font-weight: 700; color: #636c76; text-transform: uppercase;">Platform</th>
-                                    <th style="padding: 8px 12px; font-size: 10px; font-weight: 700; color: #636c76; text-transform: uppercase;">Handle / Username</th>
-                                    <th style="padding: 8px 12px; font-size: 10px; font-weight: 700; color: #636c76; text-transform: uppercase; text-align: right;">Audience Reach</th>
+                                    <th style="padding: 7px 10px; font-size: 9px; font-weight: 700; color: #636c76; text-transform: uppercase; width: 32%;">Platform</th>
+                                    <th style="padding: 7px 10px; font-size: 9px; font-weight: 700; color: #636c76; text-transform: uppercase; width: 38%;">Handle / Username</th>
+                                    <th style="padding: 7px 10px; font-size: 9px; font-weight: 700; color: #636c76; text-transform: uppercase; text-align: right; width: 30%;">Audience Reach</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -569,9 +588,9 @@
                     </div>
 
                     <!-- Certification Footer -->
-                    <div style="padding-top: 16px; border-top: 1px solid #d0d7de; text-align: center; font-size: 10px; color: #636c76; line-height: 1.5;">
-                        <p style="margin: 0;">This document certifies the calculated social media reach index generated via InfScore Audit Engine on ${data.formattedDate}.</p>
-                        <p style="margin: 2px 0 0 0;">&copy; 2026 InfScore Brand. All rights reserved. Self-reported verified output.</p>
+                    <div style="padding-top: 12px; border-top: 1px solid #d0d7de; text-align: center; font-size: 9px; color: #636c76; line-height: 1.4;">
+                        <p style="margin: 0;">This official document certifies the calculated social media reach index generated via InfScore Engine on ${data.formattedDate}.</p>
+                        <p style="margin: 2px 0 0 0;">&copy; 2026 InfScore Brand. All rights reserved. Self-reported verified audit certificate.</p>
                     </div>
                 </div>
             `;
@@ -606,13 +625,14 @@
                     scale: 2, 
                     useCORS: true, 
                     logging: false,
+                    windowWidth: 700,
                     scrollX: 0,
                     scrollY: 0
                 },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            // Request animation frame delay ensures full DOM painting before html2canvas capture
+            // Double frame delay ensures full DOM painting before canvas capture
             requestAnimationFrame(() => {
                 setTimeout(() => {
                     const targetElement = hiddenHost.firstElementChild;
