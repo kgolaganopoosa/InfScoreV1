@@ -1,0 +1,506 @@
+```html
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InfScore - Measure Your Digital Influence</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- html2pdf.js CDN for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        githubBg: '#f6f8fa',
+                        githubBorder: '#d0d7de',
+                        githubText: '#24292f',
+                        githubMuted: '#57606a',
+                        githubHover: '#f3f4f6',
+                        limeAccent: '#238636',
+                        limeBright: '#2ea043',
+                        limeHighlight: '#10b981',
+                        limeLight: '#dafbe1',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f6f8fa;
+            color: #24292f;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d0d7de;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8c959f;
+        }
+    </style>
+</head>
+<body class="min-h-full flex flex-col justify-between selection:bg-lime-200 selection:text-lime-900">
+
+    <!-- Navigation Bar -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-githubBorder shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-githubText to-lime-700 flex items-center justify-center text-white shadow-md">
+                    <i class="fa-solid fa-chart-line text-lg text-lime-400"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-bold tracking-tight text-githubText">Inf<span class="text-lime-600">Score</span></span>
+                    <span class="hidden sm:inline-block ml-2 text-xs font-medium px-2 py-0.5 rounded-full bg-lime-100 text-lime-800 border border-lime-200">v2.5 Standard</span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button onclick="scrollToCalculator()" class="hidden md:inline-flex items-center space-x-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-md border border-githubBorder bg-white text-githubText hover:bg-githubHover transition shadow-sm">
+                    <i class="fa-solid fa-calculator text-lime-600"></i>
+                    <span>Calculator</span>
+                </button>
+                <button onclick="triggerPDFExport()" class="inline-flex items-center space-x-2 px-4 py-1.5 text-xs font-semibold rounded-md bg-limeAccent text-white hover:bg-limeBright transition shadow-sm focus:ring-2 focus:ring-lime-500">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Export PDF</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Wrapper -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Hero Section -->
+        <div class="text-center max-w-3xl mx-auto mb-10">
+            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-githubHover border border-githubBorder text-xs font-medium text-githubMuted mb-4">
+                <span class="w-2 h-2 rounded-full bg-lime-600 animate-pulse"></span>
+                <span>Real-time Influence & Reach Analytics</span>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-githubText mb-3">
+                Calculate Your True Social Influence
+            </h1>
+            <p class="text-sm sm:text-base text-githubMuted leading-relaxed">
+                Connect your social ecosystem across all top 10 platforms. Input your usernames and audience metrics to instantly compute your verified <strong class="text-githubText font-semibold">InfScore</strong> and export institutional-grade compliance reports.
+            </p>
+        </div>
+
+        <!-- PDF Printable Target Area Start -->
+        <div id="pdf-export-container" class="space-y-8 bg-githubBg p-1 sm:p-2 rounded-2xl">
+
+            <!-- Creator Profile Setup Card -->
+            <div class="bg-white rounded-xl border border-githubBorder p-5 sm:p-6 shadow-sm">
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-githubBorder">
+                    <div class="flex items-center space-x-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-lime-100 flex items-center justify-center text-lime-700">
+                            <i class="fa-solid fa-user-pen text-sm"></i>
+                        </div>
+                        <h2 class="text-base font-semibold text-githubText">1. Creator Profile Information</h2>
+                    </div>
+                    <span class="text-xs text-githubMuted">Required for report headers</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="creator-name" class="block text-xs font-semibold text-githubText mb-1">Full Name / Brand Name *</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-githubMuted">
+                                <i class="fa-regular fa-user text-xs"></i>
+                            </span>
+                            <input type="text" id="creator-name" placeholder="e.g. Alex Morgan" oninput="updateDashboard()"
+                                class="w-full pl-9 pr-3.5 py-2 text-sm rounded-md border border-githubBorder bg-white text-githubText focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-transparent transition">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="creator-country" class="block text-xs font-semibold text-githubText mb-1">Country of Origin *</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-githubMuted">
+                                <i class="fa-solid fa-globe text-xs"></i>
+                            </span>
+                            <select id="creator-country" onchange="updateDashboard()"
+                                class="w-full pl-9 pr-8 py-2 text-sm rounded-md border border-githubBorder bg-white text-githubText focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-transparent transition appearance-none">
+                                <option value="" disabled selected>Select your country</option>
+                                <option value="United States">United States</option>
+                                <option value="United Kingdom">United Kingdom</option>
+                                <option value="Canada">Canada</option>
+                                <option value="Australia">Australia</option>
+                                <option value="Germany">Germany</option>
+                                <option value="France">France</option>
+                                <option value="Brazil">Brazil</option>
+                                <option value="India">India</option>
+                                <option value="Japan">Japan</option>
+                                <option value="South Africa">South Africa</option>
+                                <option value="Nigeria">Nigeria</option>
+                                <option value="Singapore">Singapore</option>
+                                <option value="United Arab Emirates">United Arab Emirates</option>
+                                <option value="Other">Other Country</option>
+                            </select>
+                            <span class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-githubMuted text-xs">
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Summary Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <!-- Total Followers Card -->
+                <div class="bg-white rounded-xl border border-githubBorder p-5 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-githubMuted uppercase tracking-wider">Total Combined Reach</p>
+                        <h3 id="display-total-followers" class="text-2xl font-bold text-githubText mt-1">0</h3>
+                        <p class="text-xs text-githubMuted mt-1">Subscribers & Followers</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-githubHover border border-githubBorder flex items-center justify-center text-githubText">
+                        <i class="fa-solid fa-users text-lg text-lime-600"></i>
+                    </div>
+                </div>
+
+                <!-- InfScore Card -->
+                <div class="bg-gradient-to-br from-githubText to-gray-900 text-white rounded-xl border border-githubBorder p-5 shadow-md flex items-center justify-between relative overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-lime-500/10 rounded-full blur-xl pointer-events-none"></div>
+                    <div>
+                        <div class="flex items-center space-x-1.5">
+                            <p class="text-xs font-medium text-lime-400 uppercase tracking-wider">Calculated InfScore</p>
+                            <span class="relative flex h-2 w-2">
+                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-lime-400 opacity-75"></span>
+                              <span class="relative inline-flex rounded-full h-2 w-2 bg-lime-500"></span>
+                            </span>
+                        </div>
+                        <h3 id="display-inf-score" class="text-3xl font-extrabold text-white mt-1">0.00</h3>
+                        <p class="text-xs text-gray-400 mt-1">1% of Total Reach Index</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center text-lime-400">
+                        <i class="fa-solid fa-bolt text-lg"></i>
+                    </div>
+                </div>
+
+                <!-- Active Platforms Card -->
+                <div class="bg-white rounded-xl border border-githubBorder p-5 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-githubMuted uppercase tracking-wider">Active Networks</p>
+                        <h3 id="display-active-platforms" class="text-2xl font-bold text-githubText mt-1">0 / 10</h3>
+                        <p class="text-xs text-githubMuted mt-1">Platforms configured</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-githubHover border border-githubBorder flex items-center justify-center text-githubText">
+                        <i class="fa-solid fa-network-wired text-lg text-lime-600"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top 10 Social Media Platforms Matrix -->
+            <div class="bg-white rounded-xl border border-githubBorder p-5 sm:p-6 shadow-sm">
+                <div id="calculator-anchor" class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 pb-4 border-b border-githubBorder gap-3">
+                    <div class="flex items-center space-x-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-lime-100 flex items-center justify-center text-lime-700">
+                            <i class="fa-solid fa-list-check text-sm"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-base font-semibold text-githubText">2. Social Media Channels & Audience Metrics</h2>
+                            <p class="text-xs text-githubMuted">Enter your handle and follower counts for each platform below.</p>
+                        </div>
+                    </div>
+                    <button onclick="clearAllInputs()" class="self-start sm:self-auto inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-githubBorder text-githubMuted hover:text-githubText hover:bg-githubHover transition">
+                        <i class="fa-solid fa-rotate-left"></i>
+                        <span>Reset Metrics</span>
+                    </button>
+                </div>
+
+                <!-- Platforms Grid / List -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="platforms-container">
+                    <!-- Platform items injected dynamically or statically with rich UI -->
+                </div>
+            </div>
+
+        </div>
+        <!-- PDF Printable Target Area End -->
+
+        <!-- Action Bottom Toolbar -->
+        <div class="mt-8 flex flex-col sm:flex-row items-center justify-between bg-white rounded-xl border border-githubBorder p-4 sm:p-6 shadow-sm gap-4">
+            <div class="flex items-center space-x-3 text-left">
+                <div class="w-10 h-10 rounded-full bg-lime-100 flex items-center justify-center text-lime-700 flex-shrink-0">
+                    <i class="fa-solid fa-file-pdf text-base"></i>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-githubText">Ready to download your official InfScore statement?</h4>
+                    <p class="text-xs text-githubMuted">Generates a formatted PDF report including timestamp, user details, breakdown, and final score.</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3 w-full sm:w-auto">
+                <button onclick="triggerPDFExport()" class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-2.5 text-sm font-semibold rounded-md bg-limeAccent text-white hover:bg-limeBright transition shadow-sm focus:ring-2 focus:ring-lime-500">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Download PDF Report</span>
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-githubBorder mt-16 text-githubMuted text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-2">
+                <div class="w-6 h-6 rounded-md bg-githubText text-white flex items-center justify-center font-bold text-xs">IS</div>
+                <span class="font-semibold text-githubText">&copy; 2026 InfScore Brand. All rights reserved.</span>
+            </div>
+            <div class="flex flex-wrap items-center justify-center gap-6 font-medium">
+                <button onclick="openModal('privacyModal')" class="hover:text-githubText transition">Privacy Policy</button>
+                <button onclick="openModal('termsUseModal')" class="hover:text-githubText transition">Terms of Use</button>
+                <button onclick="openModal('termsCondModal')" class="hover:text-githubText transition">Terms & Conditions</button>
+                <span class="text-githubBorder">|</span>
+                <span class="text-githubMuted">GitHub Light Edition</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <!-- Privacy Policy Modal -->
+    <div id="privacyModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden p-4">
+        <div class="bg-white rounded-xl border border-githubBorder max-w-2xl w-full max-h-[80vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-githubBorder bg-githubBg">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-shield-halved text-lime-600"></i>
+                    <h3 class="font-bold text-githubText text-base">Privacy Policy</h3>
+                </div>
+                <button onclick="closeModal('privacyModal')" class="text-githubMuted hover:text-githubText p-1.5 rounded-lg hover:bg-githubHover transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto space-y-4 text-githubText text-xs sm:text-sm leading-relaxed">
+                <p class="text-githubMuted text-xs">Last updated: January 2026</p>
+                <h4 class="font-semibold text-githubText">1. Information We Process Locally</h4>
+                <p>InfScore ("we", "our", or "us") operates as a front-end client-side web application. All information entered including creator names, country of origin, social media handles, and follower counts are processed directly within your web browser. We do not store, harvest, or transmit your social metric data to any remote database.</p>
+                <h4 class="font-semibold text-githubText">2. Data Security & Client Storage</h4>
+                <p>Because computation occurs locally in real-time, your information remains entirely under your control. When you export a PDF document, the file is compiled locally on your device via client libraries without server-side interception.</p>
+                <h4 class="font-semibold text-githubText">3. Cookies and Analytics</h4>
+                <p>We do not deploy tracking cookies or intrusive advertising pixels. Essential state persistence uses local browser memory solely for session continuity.</p>
+            </div>
+            <div class="px-6 py-3 border-t border-githubBorder bg-githubBg flex justify-end">
+                <button onclick="closeModal('privacyModal')" class="px-4 py-1.5 text-xs font-semibold rounded-md bg-githubText text-white hover:bg-gray-800 transition">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms of Use Modal -->
+    <div id="termsUseModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden p-4">
+        <div class="bg-white rounded-xl border border-githubBorder max-w-2xl w-full max-h-[80vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-githubBorder bg-githubBg">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-file-contract text-lime-600"></i>
+                    <h3 class="font-bold text-githubText text-base">Terms of Use</h3>
+                </div>
+                <button onclick="closeModal('termsUseModal')" class="text-githubMuted hover:text-githubText p-1.5 rounded-lg hover:bg-githubHover transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto space-y-4 text-githubText text-xs sm:text-sm leading-relaxed">
+                <p class="text-githubMuted text-xs">Effective date: January 2026</p>
+                <h4 class="font-semibold text-githubText">1. Acceptance of Terms</h4>
+                <p>By accessing and utilizing InfScore, you agree to comply with these Terms of Use. The tool is provided for personal branding, portfolio curation, and digital influence estimation.</p>
+                <h4 class="font-semibold text-githubText">2. Accurate Representation</h4>
+                <p>Users are solely responsible for entering accurate subscriber and follower metrics. InfScore provides a mathematical calculation (Influence Score = 1% of total follower sum) for analytical benchmarking and does not independently audit official platform APIs unless verified.</p>
+                <h4 class="font-semibold text-githubText">3. Intellectual Property</h4>
+                <p>The InfScore brand, visual interface, GitHub-inspired design elements, and calculation algorithms are protected. Unauthorized commercial reproduction or trademark misuse is strictly prohibited.</p>
+            </div>
+            <div class="px-6 py-3 border-t border-githubBorder bg-githubBg flex justify-end">
+                <button onclick="closeModal('termsUseModal')" class="px-4 py-1.5 text-xs font-semibold rounded-md bg-githubText text-white hover:bg-gray-800 transition">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms and Conditions Modal -->
+    <div id="termsCondModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden p-4">
+        <div class="bg-white rounded-xl border border-githubBorder max-w-2xl w-full max-h-[80vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-githubBorder bg-githubBg">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-scale-balanced text-lime-600"></i>
+                    <h3 class="font-bold text-githubText text-base">Terms and Conditions</h3>
+                </div>
+                <button onclick="closeModal('termsCondModal')" class="text-githubMuted hover:text-githubText p-1.5 rounded-lg hover:bg-githubHover transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto space-y-4 text-githubText text-xs sm:text-sm leading-relaxed">
+                <p class="text-githubMuted text-xs">Legal Disclaimers & Limitations</p>
+                <h4 class="font-semibold text-githubText">1. Limitation of Liability</h4>
+                <p>InfScore is provided on an "as is" and "as available" basis without warranties of any kind, whether express or implied. We shall not be held liable for any direct, indirect, incidental, or consequential damages arising from the use of calculated influence scores in commercial sponsorships, media kits, or professional negotiations.</p>
+                <h4 class="font-semibold text-githubText">2. Calculation Methodology</h4>
+                <p>The InfScore metric is calculated as exactly 1% (Total Followers / 100 or Total * 0.01) of the cumulative aggregate follower and subscriber count entered across the specified top 10 social networks.</p>
+                <h4 class="font-semibold text-githubText">3. Modifications</h4>
+                <p>We reserve the right to modify these terms, platform lists, or calculation parameters at any time without prior individual notice.</p>
+            </div>
+            <div class="px-6 py-3 border-t border-githubBorder bg-githubBg flex justify-end">
+                <button onclick="closeModal('termsCondModal')" class="px-4 py-1.5 text-xs font-semibold rounded-md bg-githubText text-white hover:bg-gray-800 transition">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Script -->
+    <script>
+        // Top 10 Social Media Platforms Definition
+        const platforms = [
+            { id: 'youtube', name: 'YouTube', icon: 'fa-brands fa-youtube', color: 'text-red-600', bg: 'bg-red-50', placeholder: '@channelname' },
+            { id: 'instagram', name: 'Instagram', icon: 'fa-brands fa-instagram', color: 'text-pink-600', bg: 'bg-pink-50', placeholder: '@username' },
+            { id: 'tiktok', name: 'TikTok', icon: 'fa-brands fa-tiktok', color: 'text-black', bg: 'bg-gray-100', placeholder: '@handle' },
+            { id: 'twitter', name: 'X (Twitter)', icon: 'fa-brands fa-x-twitter', color: 'text-black', bg: 'bg-gray-100', placeholder: '@handle' },
+            { id: 'facebook', name: 'Facebook', icon: 'fa-brands fa-facebook', color: 'text-blue-600', bg: 'bg-blue-50', placeholder: 'Page / Profile name' },
+            { id: 'linkedin', name: 'LinkedIn', icon: 'fa-brands fa-linkedin-in', color: 'text-blue-700', bg: 'bg-blue-50', placeholder: 'in/username' },
+            { id: 'twitch', name: 'Twitch', icon: 'fa-brands fa-twitch', color: 'text-purple-600', bg: 'bg-purple-50', placeholder: 'username' },
+            { id: 'reddit', name: 'Reddit', icon: 'fa-brands fa-reddit-alien', color: 'text-orange-600', bg: 'bg-orange-50', placeholder: 'u/username' },
+            { id: 'pinterest', name: 'Pinterest', icon: 'fa-brands fa-pinterest', color: 'text-red-700', bg: 'bg-red-50', placeholder: '@username' },
+            { id: 'snapchat', name: 'Snapchat', icon: 'fa-brands fa-snapchat', color: 'text-yellow-500', bg: 'bg-yellow-50', placeholder: '@username' }
+        ];
+
+        // Render Platform Input Cards
+        function renderPlatforms() {
+            const container = document.getElementById('platforms-container');
+            let html = '';
+            
+            platforms.forEach(p => {
+                html += `
+                    <div class="border border-githubBorder rounded-lg p-4 bg-githubBg hover:border-gray-400 transition flex flex-col justify-between space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2.5">
+                                <div class="w-8 h-8 rounded-md ${p.bg} ${p.color} flex items-center justify-center text-base shadow-sm">
+                                    <i class="${p.icon}"></i>
+                                </div>
+                                <span class="font-semibold text-githubText text-sm">${p.name}</span>
+                            </div>
+                            <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded bg-white border border-githubBorder text-githubMuted">Channel #${platforms.indexOf(p) + 1}</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-[11px] font-medium text-githubMuted mb-1">Username / Handle</label>
+                                <input type="text" id="handle-${p.id}" placeholder="${p.placeholder}" oninput="updateDashboard()"
+                                    class="w-full px-3 py-1.5 text-xs rounded-md border border-githubBorder bg-white text-githubText focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-transparent transition">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-medium text-githubMuted mb-1">Followers / Subscribers</label>
+                                <input type="number" id="count-${p.id}" min="0" placeholder="e.g. 25000" oninput="updateDashboard()"
+                                    class="w-full px-3 py-1.5 text-xs rounded-md border border-githubBorder bg-white text-githubText focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-transparent transition">
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Calculation & Real-time Dashboard Update
+        function updateDashboard() {
+            let totalFollowers = 0;
+            let activeCount = 0;
+
+            platforms.forEach(p => {
+                const countInput = document.getElementById(`count-${p.id}`);
+                const handleInput = document.getElementById(`handle-${p.id}`);
+                
+                const val = parseInt(countInput.value) || 0;
+                if (val > 0 || (handleInput && handleInput.value.trim() !== '')) {
+                    if (val > 0) {
+                        totalFollowers += val;
+                        activeCount++;
+                    }
+                }
+            });
+
+            // InfScore calculation: 1% of total (Total * 0.01 or Total / 100)
+            const infScore = totalFollowers * 0.01;
+
+            // Update UI elements
+            document.getElementById('display-total-followers').innerText = totalFollowers.toLocaleString();
+            document.getElementById('display-inf-score').innerText = infScore.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('display-active-platforms').innerText = `${activeCount} / 10`;
+        }
+
+        // Clear All Inputs
+        function clearAllInputs() {
+            document.getElementById('creator-name').value = '';
+            document.getElementById('creator-country').value = '';
+            platforms.forEach(p => {
+                document.getElementById(`handle-${p.id}`).value = '';
+                document.getElementById(`count-${p.id}`).value = '';
+            });
+            updateDashboard();
+        }
+
+        // Scroll to Calculator
+        function scrollToCalculator() {
+            document.getElementById('calculator-anchor').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Modal Handlers
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        // Close modals on outside click
+        window.onclick = function(event) {
+            ['privacyModal', 'termsUseModal', 'termsCondModal'].forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (event.target === modal) {
+                    closeModal(modalId);
+                }
+            });
+        }
+
+        // PDF Export Function using html2pdf.js
+        function triggerPDFExport() {
+            const creatorName = document.getElementById('creator-name').value.trim() || 'Anonymous Creator';
+            const country = document.getElementById('creator-country').value || 'Global';
+            
+            // Check if at least some data exists
+            const element = document.getElementById('pdf-export-container');
+            
+            const opt = {
+                margin:       [10, 10, 10, 10],
+                filename:     `InfScore_Report_${creatorName.replace(/\s+/g, '_')}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Temporary styling tweak for clean PDF output
+            const originalBg = element.style.backgroundColor;
+            element.style.backgroundColor = '#ffffff';
+
+            html2pdf().from(element).set(opt).save().then(() => {
+                element.style.backgroundColor = originalBg;
+            }).catch(err => {
+                console.error("PDF Generation error:", err);
+                alert("Could not generate PDF automatically. You can also use Ctrl+P to print or save as PDF.");
+            });
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            renderPlatforms();
+            updateDashboard();
+        }
+    </script>
+</body>
+</html>
+```
